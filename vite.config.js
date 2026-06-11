@@ -7,5 +7,5 @@ export default defineConfig({
   build: {
     sourcemap: true
   },
-  base: '/avoid-the-germs/'
+  base: '/phaser-avoid-the-germs/'
 });
