@@ -11,8 +11,7 @@ export class Boot extends Scene
     {
         this.load.image('preloader', 'assets/preloader.png');
 
-        // this.load.setBaseURL('https://cdn.phaserfiles.com/v385');
-        this.load.setPath('assets/games/germs/');
+        this.load.setPath('assets/');
         this.load.image('background', 'background.png');
         this.load.bitmapFont('slime', 'slime-font.png', 'slime-font.xml');
     }
