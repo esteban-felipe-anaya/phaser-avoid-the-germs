@@ -9,37 +9,71 @@ export class MainMenu extends Scene
 
     create ()
     {
-        //  Get the current highscore from the registry
-        const score = this.registry.get('highscore');
+        this.music = this.sound.play('music', { loop: true });
+        
+        this.sound.play('laugh');
 
-        const textStyle = { fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff', stroke: '#000000', strokeThickness: 8 };
+        this.add.image(400, 300, 'background').setScale(2);
 
-        this.add.image(512, 384, 'background');
+        const area = new Phaser.Geom.Rectangle(64, 64, 672, 472);
 
-        const logo = this.add.image(512, -270, 'logo');
+        this.addGerm(area, 'germ1');
+        this.addGerm(area, 'germ2');
+        this.addGerm(area, 'germ3');
+        this.addGerm(area, 'germ4');
 
-        this.tweens.add({
-            targets: logo,
-            y: 270,
-            duration: 1000,
-            ease: 'Bounce'
-        });
+        const shader = this.add.shader({
+            name: 'goo',
+            fragmentKey: 'goo',
+            setupUniforms: (setUniform, drawingContext) =>
+            {
+                setUniform('time', this.game.loop.getDuration());
+            },
+        }, 400, 300, this.scale.width, this.scale.width);
 
-        this.add.text(32, 32, `High Score: ${score}`, textStyle);
+        this.add.image(400, 260, 'assets', 'logo');
 
-        const instructions = [
-            'How many coins can you',
-            'click in 10 seconds?',
-            '',
-            'Click to Start!'
-        ]
-
-        this.add.text(512, 550, instructions, textStyle).setAlign('center').setOrigin(0.5);
+        this.add.bitmapText(400, 500, 'slime', 'Click to Play', 40).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
 
-            this.scene.start('ClickerGame');
+            this.scene.start('MainGame');
 
+        });
+    }
+
+     addGerm (area, animation)
+    {
+        let start = area.getRandomPoint();
+
+        let germ = this.add.sprite(start.x, start.y).play(animation).setScale(2);
+        
+        let durationX = Phaser.Math.Between(4000, 6000);
+        let durationY = durationX + 3000;
+
+        this.tweens.add({
+            targets: germ,
+            x: {
+                getStart: (tween, target) => {
+                    return germ.x;
+                },
+                getEnd: () => {
+                    return area.getRandomPoint().x;
+                },
+                duration: durationX,
+                ease: 'Linear'
+            },
+            y: {
+                getStart: (tween, target) => {
+                    return germ.y;
+                },
+                getEnd: () => {
+                    return area.getRandomPoint().y;
+                },
+                duration: durationY,
+                ease: 'Linear'
+            },
+            repeat: -1
         });
     }
 }
