@@ -1,3 +1,5 @@
+import * as Phaser from 'phaser';
+
 export default class Pickups extends Phaser.Physics.Arcade.Group
 {
     constructor (world, scene)

@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import * as Phaser from 'phaser';
 
 export class MainMenu extends Scene
 {
@@ -22,14 +23,14 @@ export class MainMenu extends Scene
         this.addGerm(area, 'germ3');
         this.addGerm(area, 'germ4');
 
-        const shader = this.add.shader({
-            name: 'goo',
-            fragmentKey: 'goo',
-            setupUniforms: (setUniform, drawingContext) =>
-            {
-                setUniform('time', this.game.loop.getDuration());
-            },
-        }, 400, 300, this.scale.width, this.scale.width);
+        console.log(this.cache.shader.get('goo'));
+        const shader = this.add.shader(
+            'goo',
+            400,
+            300,
+            this.scale.width,
+            this.scale.width
+        )
 
         this.add.image(400, 260, 'assets', 'logo');
 
@@ -42,7 +43,7 @@ export class MainMenu extends Scene
         });
     }
 
-     addGerm (area, animation)
+    addGerm (area, animation)
     {
         let start = area.getRandomPoint();
 

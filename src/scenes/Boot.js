@@ -9,8 +9,6 @@ export class Boot extends Scene
 
     preload ()
     {
-        this.load.image('preloader', 'assets/preloader.png');
-
         this.load.setPath('assets/');
         this.load.image('background', 'background.png');
         this.load.bitmapFont('slime', 'slime-font.png', 'slime-font.xml');

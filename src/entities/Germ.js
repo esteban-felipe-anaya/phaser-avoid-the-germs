@@ -1,3 +1,5 @@
+import * as Phaser from 'phaser';
+
 export default class Germ extends Phaser.Physics.Arcade.Sprite
 {
     constructor (scene, x, y, animation, speed)

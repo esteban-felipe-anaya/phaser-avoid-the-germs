@@ -1,4 +1,5 @@
 import Germ from './Germ.js';
+import * as Phaser from 'phaser';
 
 export default class Germs extends Phaser.Physics.Arcade.Group
 {

@@ -1,101 +1,55 @@
-export default class Germ extends Phaser.Physics.Arcade.Sprite
+import * as Phaser from 'phaser';
+
+export default class Player extends Phaser.Physics.Arcade.Image
 {
-    constructor (scene, x, y, animation, speed)
+    constructor (scene, x, y)
     {
-        super(scene, x, y, 'assets');
+        super(scene, x, y, 'assets', 'player');
 
-        this.play(animation)
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
 
-        this.setScale(Phaser.Math.FloatBetween(1, 2));
+        this.setCircle(14, 3, 6);
+        this.setCollideWorldBounds(true);
 
-        this.speed = speed;
+        this.isAlive = false;
 
-        this.alpha = 0;
-        this.lifespan = 0;
-        this.isChasing = false;
-
+        this.speed = 280;
         this.target = new Phaser.Math.Vector2();
     }
 
-    start (chaseDelay)
+    start ()
     {
-        this.setCircle(14, 6, 2);
+        this.isAlive = true;
 
-        if (!chaseDelay)
+        this.scene.input.on('pointermove', (pointer) =>
         {
-            chaseDelay = Phaser.Math.RND.between(3000, 8000);
-
-            this.scene.sound.play('appear');
-        }
-
-        this.scene.tweens.add({
-            targets: this,
-            alpha: 1,
-            duration: 2000,
-            ease: 'Linear',
-            hold: chaseDelay,
-            onComplete: () => {
-                if (this.scene.player.isAlive)
-                {
-                    this.lifespan = Phaser.Math.RND.between(6000, 12000);
-                    this.isChasing = true;
-                }
-            }
-        });
-
-        return this;
-    }
-
-    restart (x, y)
-    {
-        this.body.reset(x, y);
-
-        this.setActive(true);
-        this.setVisible(true);
-        this.setAlpha(0);
-
-        return this.start();
-    }
-
-    preUpdate (time, delta)
-    {
-        super.preUpdate(time, delta);
-
-        if (this.isChasing)
-        {
-            this.lifespan -= delta;
-
-            if (this.lifespan <= 0)
+            if (this.isAlive)
             {
-                this.isChasing = false;
-
-                this.body.stop();
-
-                this.scene.tweens.add({
-                    targets: this,
-                    alpha: 0,
-                    duration: 1000,
-                    ease: 'Linear',
-                    onComplete: () => {
-                        this.setActive(false);
-                        this.setVisible(false);
-                    }
-                });
-            }
-            else
-            {
-                this.scene.getPlayer(this.target);
-            
+                this.target.x = pointer.x;
+                this.target.y = pointer.y;
+                
                 //  Add 90 degrees because the sprite is drawn facing up
                 this.rotation = this.scene.physics.moveToObject(this, this.target, this.speed) + 1.5707963267948966;
             }
-        }
+        });
     }
 
-    stop ()
+    kill ()
     {
-        this.isChasing = false;
+        this.isAlive = false;
 
         this.body.stop();
+    }
+
+    preUpdate ()
+    {
+        if (this.body.speed > 0 && this.isAlive)
+        {
+            if (Phaser.Math.Distance.Between(this.x, this.y, this.target.x, this.target.y) < 6)
+            {
+                this.body.reset(this.target.x, this.target.y);
+            }
+        }
     }
 }
